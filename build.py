@@ -20,7 +20,7 @@ def page(path,title,desc,body,schema=None):
     sc="".join(f'<script type="application/ld+json">{json.dumps(s)}</script>' for s in (schema or []))
     h=f"""<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{html.escape(title)}</title><meta name="description" content="{html.escape(desc)}"><link rel="canonical" href="{BASE}/{path.replace('index.html','')}">
-<link rel="stylesheet" href="/assets/style.css">{sc}</head><body><header><div class="w"><a class="logo" href="/">Brick &amp; Budget</a><nav><a href="/#calculators">Calculators</a><a href="/about.html">About</a></nav></div></header>
+<link rel="stylesheet" href="/assets/style.css">{sc}</head><body><header><div class="w"><a class="logo" href="/">Brick &amp; Budget</a><nav><a href="/#calculators">Calculators</a><a href="https://payhip.com/TradeSheetUK">Templates</a><a href="/about.html">About</a></nav></div></header>
 <main><div class="w">{body}</div></main><footer><div class="w"><p><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/disclosure.html">Affiliate disclosure</a><a href="mailto:brickandbudget.uk@gmail.com">Contact</a></p>
 <p>Brick &amp; Budget gives estimates only. Always check quantities with your supplier and allow for site conditions.</p></div></footer></body></html>"""
     h=h.replace('href="/','href="'+P+'/').replace('src="/','src="'+P+'/')
