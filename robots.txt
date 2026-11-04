@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://curtisrobertrc-droid.github.io/brickandbudget/sitemap.xml
