@@ -110,7 +110,7 @@ def sb_cta(slug):
     u+=f"?utm_source=brickandbudget&utm_medium=referral&utm_campaign={slug}-calculator"
     return f'<div class="card sb-cta"><p><strong>Planning the whole job?</strong> Get a full materials list and compare prices from UK suppliers in <a href="{u}">SmartBuild</a>.</p></div>'
 urls=["","about.html","privacy.html","disclosure.html"]
-DISC='<p class="disc">Affiliate disclosure: some links on this page may be affiliate links. If you buy through them we may earn a small commission at no extra cost to you. <a href="/disclosure.html">Read more</a>.</p>'
+DISC='<p class="disc">Some links are affiliate links. We may earn a small commission at no extra cost to you. <a href="/disclosure.html">Read more</a>.</p>'
 for slug,title,desc,steps,ex,faq,src in calcs:
     p=f"{slug}-calculator/index.html"; urls.append(f"{slug}-calculator/")
     body=f'<p class="note"><a href="/">Home</a> / Calculators</p><h1>{title}</h1><p class="lead">{desc}</p>{DISC}<div class="card" id="calc"><noscript>This calculator needs JavaScript.</noscript></div>'
@@ -165,7 +165,7 @@ gbody=f'''<p class="note"><a href="/">Home</a> / Cost guides</p><h1>{gt}</h1><p 
 <button onclick="bbEst()">Estimate cost</button><div class="out" id="eo"></div></div>
 <script>function bbEst(){{var b=+sz.value*+sp.value,t=b+ +ly.value+ (+uf.value||0)*100,lo=Math.round(t*0.85/100)*100,hi=Math.round(t*1.2/100)*100,f=function(n){{return "£"+n.toLocaleString("en-GB")}};eo.innerHTML="<div><span>Likely range</span><strong>"+f(lo)+" to "+f(hi)+"</strong></div><div><span>Add a 10% contingency</span><strong>"+f(Math.round(hi*0.1/100)*100)+"</strong></div>"}}bbEst()</script>
 <p class="note">The estimator scales published national averages by size and specification. It is a budgeting guide, not a quote.</p>
-<div class="card sb-cta"><p><strong>Tiling or re-boarding the room yourself?</strong> Get a full materials list with up-to-date UK supplier prices in <a href="{SB}/guides/how-many-floor-tiles-for-a-bathroom/?utm_source=brickandbudget&utm_medium=referral&utm_campaign=bathroom-cost-guide">SmartBuild</a>. It is free and needs no sign-up.</p></div>
+<div class="card sb-cta"><p><strong>Ready to plan your bathroom?</strong> <a href="{SB}/app/?utm_source=brickandbudget&utm_medium=referral&utm_campaign=bathroom-cost-guide">Plan the whole job and compare prices in SmartBuild</a>. It is free and needs no sign-up.</p><p class="note">Tiling or re-boarding yourself? See the <a href="{SB}/guides/how-many-floor-tiles-for-a-bathroom/?utm_source=brickandbudget&utm_medium=referral&utm_campaign=bathroom-cost-guide">bathroom floor tiles guide</a>.</p></div>
 <h2>How to keep the cost down</h2><ul><li>Keep the toilet, basin and bath or shower in the same positions to avoid moving waste pipes.</li><li>Tile only the wet zones and use moisture-resistant paint elsewhere.</li><li>Get at least three written quotes that list what is included: removal, plastering, electrics, tiling and waste.</li><li>Buy the suite yourself only if the fitter agrees; some will not warranty customer-supplied items.</li></ul>
 <h2>Plan the whole budget</h2><p class="note">Track quotes, materials and labour in the TradeSheet Co <a href="https://payhip.com/b/c2UC3">Home Renovation Budget Planner</a>. Doing the kitchen too? See SmartBuild's <a href="{SB}/guides/cost-to-renovate-a-kitchen-uk/?utm_source=brickandbudget&utm_medium=referral&utm_campaign=bathroom-cost-guide">kitchen renovation cost guide</a> and the <a href="https://payhip.com/b/KTcDH">Kitchen Planner Printable</a>.</p>
 {aff_slot(G)}
