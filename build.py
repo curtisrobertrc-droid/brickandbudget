@@ -103,13 +103,19 @@ calcs=[
  ["Radiator manufacturer output data (Delta T50)"]),
 ]
 PROMO={k:'Budgeting a bigger project? The TradeSheet Co <a href="https://payhip.com/b/c2UC3">Home Renovation Budget Planner</a> tracks materials, labour and costs in one spreadsheet. More templates in the <a href="https://payhip.com/TradeSheetUK">TradeSheet Co shop</a>.' for k in ['decking','fence','gravel','insulation','radiator']}
+SB="https://smartbuilduk.co.uk"
+SBG={"paint":"how-much-paint-do-i-need","plasterboard":"how-much-plasterboard-do-i-need","plaster":"how-much-plaster-do-i-need","tiles":"how-many-tiles-do-i-need","skirting":"how-much-skirting-board-do-i-need","flooring":"how-much-laminate-flooring-do-i-need","wallpaper":"how-many-rolls-of-wallpaper-do-i-need","insulation":"how-much-loft-insulation-do-i-need","fence":"how-many-fence-panels-do-i-need","decking":"how-much-decking-do-i-need","concrete":"how-much-concrete-for-a-shed-base","gravel":"how-much-gravel-do-i-need","bricks":"how-many-bricks-do-i-need"}
+def sb_cta(slug):
+    u=f"{SB}/guides/{SBG[slug]}/" if slug in SBG else f"{SB}/app/"
+    u+=f"?utm_source=brickandbudget&utm_medium=referral&utm_campaign={slug}-calculator"
+    return f'<div class="card sb-cta"><p><strong>Planning the whole job?</strong> Get a full materials list and compare prices from UK suppliers in <a href="{u}">SmartBuild</a>.</p></div>'
 urls=["","about.html","privacy.html","disclosure.html"]
 DISC='<p class="disc">Affiliate disclosure: some links on this page may be affiliate links. If you buy through them we may earn a small commission at no extra cost to you. <a href="/disclosure.html">Read more</a>.</p>'
 for slug,title,desc,steps,ex,faq,src in calcs:
     p=f"{slug}-calculator/index.html"; urls.append(f"{slug}-calculator/")
     body=f'<p class="note"><a href="/">Home</a> / Calculators</p><h1>{title}</h1><p class="lead">{desc}</p>{DISC}<div class="card" id="calc"><noscript>This calculator needs JavaScript.</noscript></div>'
     body+="<h2>How to work it out</h2><ol>"+"".join(f"<li>{s}</li>" for s in steps)+"</ol>"
-    body+=f'<h2>Worked example</h2><div class="card"><p>{ex}</p></div>'
+    body+=f'<h2>Worked example</h2><div class="card"><p>{ex}</p></div>'+sb_cta(slug)
     body+='<h2>What you will need</h2><p class="note">Recommended materials and tools will be listed here. (Affiliate links will be added once programmes are approved.)</p>'
     body+="<h2>Frequently asked questions</h2>"+"".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q,a in faq)
     body+="<h2>Sources</h2><ul>"+"".join(f"<li>{s}</li>" for s in src)+'</ul><p class="note">Results are estimates. Always confirm quantities with your supplier.</p>'
