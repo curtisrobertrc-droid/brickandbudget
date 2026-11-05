@@ -31,6 +31,24 @@ C.skirting = { inputs: [["perimeter","Room perimeter (m)",14],["doors","Number o
 C.wallpaper = { inputs: [["perimeter","Total wall width (m)",14],["height","Wall height (m)",2.4],["repeat","Pattern repeat (cm)",0],["rollw","Roll width (cm)",53],["rolll","Roll length (m)",10]],
   compute: function (v) { var drop = v.height + 0.1 + v.repeat/100; var perRoll = Math.floor(v.rolll/drop); var drops = ceil(v.perimeter/(v.rollw/100));
     return [["Drops needed", drops],["Full drops per roll", perRoll],["Rolls needed", perRoll>0 ? ceil(drops/perRoll) : "Roll too short"]]; } };
+C.decking = { inputs: [["length","Deck length, along the boards (m)",4],["width","Deck width (m)",3],["boardw","Board width (mm)",144],["boardl","Board length (m)",3.6],["joistl","Joist length (m)",4.8],["waste","Waste allowance (%)",10]],
+  compute: function (v) { var cover = (v.boardw+5)/1000; /* 5 mm gap between boards */ var rows = ceil(v.width/cover); var boards = ceil(rows*v.length*(1+v.waste/100)/v.boardl);
+    var joists = Math.floor(v.length/0.4)+1; /* joists across the deck at 400 mm centres */ var joistLengths = ceil(joists*v.width*(1+v.waste/100)/v.joistl); var screws = rows*joists*2;
+    return [["Deck area", r2(v.length*v.width)+" m²"],["Board rows", rows],["Deck boards", boards],["Joists (400 mm centres)", joists],["Joist lengths to buy", joistLengths],["Deck screws (2 per board per joist)", screws],["Boxes of 200 screws", ceil(screws/200)]]; } };
+C.fence = { inputs: [["run","Fence run length (m)",12],["panelw","Panel width incl. post (m)",1.83],["bags","Postcrete bags per post",2],["ends","Separate runs or ends (1 for one straight run)",1]],
+  compute: function (v) { var panels = ceil(v.run/v.panelw); var posts = panels + Math.max(v.ends,1);
+    return [["Fence panels", panels],["Posts", posts],["Postcrete bags (20 kg)", posts*v.bags],["Gravel boards (optional)", panels]]; } };
+C.gravel = { inputs: [["length","Length (m)",5],["width","Width (m)",4],["depth","Depth (mm)",50],["density","Density (tonnes per m³)",1.6],["bag","Bulk bag weight (tonnes)",0.85]],
+  compute: function (v) { var m3 = v.length*v.width*v.depth/1000; var t = m3*v.density;
+    return [["Area", r2(v.length*v.width)+" m²"],["Volume", r2(m3)+" m³"],["Weight", r2(t)+" tonnes"],["Bulk bags", ceil(t/v.bag)],["25 kg bags", ceil(t*1000/25)]]; } };
+C.insulation = { inputs: [["area","Loft floor area (m²)",40],["depth","Target total depth (mm)",270],["existing","Existing insulation depth (mm)",0],["joist","Joist depth, first layer (mm)",100],["roll1","Roll coverage, first layer (m²)",8.3],["roll2","Roll coverage, top layer (m²)",5.6]],
+  compute: function (v) { var need = Math.max(v.depth - v.existing, 0); var l1 = Math.min(Math.max(v.joist - v.existing,0), need); var l2 = need - l1;
+    var r1 = l1>0 ? ceil(v.area*1.05/v.roll1) : 0; var r2n = l2>0 ? ceil(v.area*1.05/v.roll2) : 0;
+    return [["Depth to add", need+" mm"],["First layer, between joists", l1+" mm: "+r1+" rolls"],["Top layer, cross-laid", l2+" mm: "+r2n+" rolls"],["Total rolls", r1+r2n]]; } };
+C.radiator = { inputs: [["length","Room length (m)",4],["width","Room width (m)",3.5],["height","Ceiling height (m)",2.4],["type","Room: 1 living, 2 bedroom, 3 kitchen, 4 bathroom",1],["north","North-facing or large windows: 1 yes, 0 no",0],["glazing","Glazing: 1 double, 2 single",1],["insul","Insulation: 1 good, 2 average, 3 poor",1]],
+  compute: function (v) { var ft3 = v.length*v.width*v.height*35.315; var f = {1:5,2:4,3:4,4:6}[v.type] || 5; var b = ft3*f;
+    if (v.north===1) b *= 1.15; if (v.glazing===2) b *= 1.1; if (v.insul===2) b *= 1.15; else if (v.insul===3) b *= 1.3;
+    return [["Room volume", r2(v.length*v.width*v.height)+" m³"],["Heat output needed", Math.round(b)+" BTU/h"],["In watts", Math.round(b/3.412)+" W"]]; } };
 function bbRender(id) {
   var c = C[id], box = document.getElementById("calc"), f = "";
   c.inputs.forEach(function (i) { f += '<label>' + i[1] + '<input type="number" step="any" inputmode="decimal" id="in-' + i[0] + '" value="' + i[2] + '"></label>'; });
