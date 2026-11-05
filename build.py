@@ -125,14 +125,63 @@ for slug,title,desc,steps,ex,faq,src in calcs:
      {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":BASE+"/"},{"@type":"ListItem","position":2,"name":title}]}]
     if slug in PROMO: body=body.replace('<h2>Frequently asked questions</h2>','<h2>Plan the whole job</h2><p class="note">'+PROMO[slug]+'</p><h2>Frequently asked questions</h2>')
     page(p,f"{title} | Brick & Budget",desc,body,schema)
+# Affiliate-ready slot: renders nothing until links exist; then shows the disclosure line with them.
+AFF={"bathroom-cost":[]}  # add (label,url) tuples once a programme approves us
+def aff_slot(key):
+    links=AFF.get(key) or []
+    if not links: return ""
+    return '<div class="card aff"><h2>Where to buy</h2>'+DISC+'<ul>'+"".join(f'<li><a href="{u}" rel="sponsored nofollow">{html.escape(l)}</a></li>' for l,u in links)+'</ul></div>'
+G="bathroom-cost"
+urls.append("new-bathroom-cost-uk/")
+gt="How Much Does a New Bathroom Cost in the UK? (2026)"
+gd="Honest 2026 UK price ranges for a new bathroom, supplied and fitted, with a cost breakdown, a simple estimator and the published sources behind every figure."
+gfaq=[("How much does an average new bathroom cost in the UK?","Checkatrade and MyJobQuote both publish an average of about £7,000 supplied and fitted in 2026, with most jobs between £5,500 and £8,000. High-end or complex bathrooms start at around £14,000."),
+("How much is labour only?","Published guides put full bathroom fitting labour at roughly £1,500 to £4,000, with fitters charging about £320 to £480 per day."),
+("How long does a new bathroom take?","Typically 5 to 10 working days, longer if the layout changes, walls are re-plastered or a wet room is tanked."),
+("Do I need building regulations approval?","Like-for-like replacement usually does not, but new electrical circuits in a bathroom are notifiable under Part P and new drainage or ventilation must meet building regulations. Use a registered electrician who can self-certify."),
+("Is VAT included?","Trade guide prices are usually quoted including VAT for homeowners. A VAT-registered fitter will add 20% to labour, so always ask whether a quote is inclusive.")]
+gbody=f'''<p class="note"><a href="/">Home</a> / Cost guides</p><h1>{gt}</h1><p class="lead">Most UK homeowners pay between £5,500 and £8,000 for a new bathroom supplied and fitted in 2026, with an average of about £7,000. A small refresh can be done for £4,000; a large or luxury bathroom often costs £14,000 or more.</p>
+<h2>Typical 2026 price ranges</h2><div class="card"><div class="out">
+<div><span>Basic refresh (like-for-like suite, minimal tiling)</span><strong>£4,000 to £5,500</strong></div>
+<div><span>Standard bathroom, supplied and fitted</span><strong>£5,500 to £8,000</strong></div>
+<div><span>Large, high-end or complex (10+ days)</span><strong>£14,000+</strong></div>
+<div><span>En-suite added to an existing bedroom</span><strong>£4,000 to £10,000</strong></div>
+<div><span>Fitting labour only, full project</span><strong>£1,500 to £4,000</strong></div></div></div>
+<h2>Where the money goes</h2><p>Published averages for the individual jobs that make up a bathroom:</p><div class="card"><div class="out">
+<div><span>Ripping out the old bathroom</span><strong>£600 to £1,000</strong></div>
+<div><span>Plumbing, first and second fix</span><strong>£1,500 to £3,000</strong></div>
+<div><span>Wall tiling (labour, mid-sized room)</span><strong>£950 to £1,250</strong></div>
+<div><span>Electrical work (lighting, extractor fan)</span><strong>about £900</strong></div>
+<div><span>Re-plastering</span><strong>about £1,500</strong></div>
+<div><span>Vinyl flooring</span><strong>£250 to £950</strong></div>
+<div><span>Underfloor heating</span><strong>about £100 per m²</strong></div>
+<div><span>Fitter day rate</span><strong>£320 to £480</strong></div></div></div>
+<p class="note">Guides disagree: MyBuilder puts the average nearer £4,500, while Checkatrade and MyJobQuote both say about £7,000. Treat all figures as ballpark national averages; London and the South East tend to be higher, the North East lower.</p>
+<h2>Quick bathroom cost estimator</h2><div class="card" id="est">
+<div class="inputs"><label>Bathroom size<select id="sz" style="display:block;width:100%;margin-top:6px;padding:11px;font-size:17px"><option value="0.8">Small or en-suite</option><option value="1" selected>Average family bathroom</option><option value="1.35">Large</option></select></label>
+<label>Specification<select id="sp" style="display:block;width:100%;margin-top:6px;padding:11px;font-size:17px"><option value="4500">Budget</option><option value="7000" selected>Mid-range</option><option value="14000">High-end</option></select></label>
+<label>Moving the layout?<select id="ly" style="display:block;width:100%;margin-top:6px;padding:11px;font-size:17px"><option value="0">No, like-for-like</option><option value="1750">Yes (new stud wall, pipe moves)</option></select></label>
+<label>Underfloor heating area (m², 0 for none)<input id="uf" type="number" min="0" value="0"></label></div>
+<button onclick="bbEst()">Estimate cost</button><div class="out" id="eo"></div></div>
+<script>function bbEst(){{var b=+sz.value*+sp.value,t=b+ +ly.value+ (+uf.value||0)*100,lo=Math.round(t*0.85/100)*100,hi=Math.round(t*1.2/100)*100,f=function(n){{return "£"+n.toLocaleString("en-GB")}};eo.innerHTML="<div><span>Likely range</span><strong>"+f(lo)+" to "+f(hi)+"</strong></div><div><span>Add a 10% contingency</span><strong>"+f(Math.round(hi*0.1/100)*100)+"</strong></div>"}}bbEst()</script>
+<p class="note">The estimator scales published national averages by size and specification. It is a budgeting guide, not a quote.</p>
+<div class="card sb-cta"><p><strong>Tiling or re-boarding the room yourself?</strong> Get a full materials list with up-to-date UK supplier prices in <a href="{SB}/guides/how-many-floor-tiles-for-a-bathroom/?utm_source=brickandbudget&utm_medium=referral&utm_campaign=bathroom-cost-guide">SmartBuild</a>. It is free and needs no sign-up.</p></div>
+<h2>How to keep the cost down</h2><ul><li>Keep the toilet, basin and bath or shower in the same positions to avoid moving waste pipes.</li><li>Tile only the wet zones and use moisture-resistant paint elsewhere.</li><li>Get at least three written quotes that list what is included: removal, plastering, electrics, tiling and waste.</li><li>Buy the suite yourself only if the fitter agrees; some will not warranty customer-supplied items.</li></ul>
+<h2>Plan the whole budget</h2><p class="note">Track quotes, materials and labour in the TradeSheet Co <a href="https://payhip.com/b/c2UC3">Home Renovation Budget Planner</a>. Doing the kitchen too? See SmartBuild's <a href="{SB}/guides/cost-to-renovate-a-kitchen-uk/?utm_source=brickandbudget&utm_medium=referral&utm_campaign=bathroom-cost-guide">kitchen renovation cost guide</a> and the <a href="https://payhip.com/b/KTcDH">Kitchen Planner Printable</a>.</p>
+{aff_slot(G)}
+<h2>Frequently asked questions</h2>'''+"".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q,a in gfaq)+'''<h2>Sources</h2><ul><li><a href="https://www.checkatrade.com/blog/cost-guides/new-bathroom-cost/">Checkatrade: How much does a new bathroom cost (updated March 2026)</a></li><li><a href="https://www.checkatrade.com/blog/cost-guides/ensuite-bathroom-installation-cost/">Checkatrade: Cost to add an en-suite (updated June 2026)</a></li><li><a href="https://whito.co.uk/kitchen-bathroom-fitters/guides/kitchen-and-bathroom-fitting-prices-what-to-publish/">Whito: comparison of Checkatrade, MyBuilder and MyJobQuote bathroom prices (2026)</a></li><li><a href="https://www.gov.uk/guidance/electrical-safety-approved-document-p">GOV.UK: Approved Document P (electrical safety)</a></li></ul><p class="note">Figures checked November 2026. Prices are estimates; always get written quotes.</p>'''
+gschema=[{"@context":"https://schema.org","@type":"Article","headline":gt,"dateModified":"2026-11-05","author":{"@type":"Organization","name":"Brick & Budget"}},
+ {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in gfaq]},
+ {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":BASE+"/"},{"@type":"ListItem","position":2,"name":gt}]}]
+page("new-bathroom-cost-uk/index.html",f"New Bathroom Cost UK 2026 | Brick & Budget",gd,gbody,gschema)
 grid="".join(f'<a href="/{s}-calculator/"><strong>{t.split(":")[0]}</strong>{d}</a>' for s,t,d,*_ in calcs)
 page("index.html","Brick & Budget: Free UK Building and DIY Material Calculators","Free UK calculators for plasterboard, plaster, paint, tiles, concrete, bricks, flooring, VAT, skirting, wallpaper, decking, fencing, gravel, loft insulation and radiators.",
- f'<h1>Free UK material calculators for builders and DIYers</h1><p class="lead">Work out what to buy before you go to the merchant. Metric, UK product sizes, and plain-English guides written from real trade experience.</p><h2 id="calculators">Calculators</h2><div class="grid">{grid}</div>',
+ f'<h1>Free UK material calculators for builders and DIYers</h1><p class="lead">Work out what to buy before you go to the merchant. Metric, UK product sizes, and plain-English guides written from real trade experience.</p><h2 id="calculators">Calculators</h2><div class="grid">{grid}</div><h2 id="guides">Cost guides</h2><div class="grid"><a href="/new-bathroom-cost-uk/"><strong>New bathroom cost UK (2026)</strong>Price ranges, breakdown and a quick estimator.</a></div>',
  [{"@context":"https://schema.org","@type":"WebSite","name":"Brick & Budget","url":BASE+"/"}])
 page("about.html","About Brick & Budget","About Brick & Budget.","<h1>About Brick &amp; Budget</h1><p>Brick &amp; Budget is a set of free calculators and guides for UK homeowners and tradespeople, built by people with hands-on experience in the North East building and refurbishment trade.</p><p>Every calculator uses UK product sizes and is checked against manufacturer guidance. Results are estimates: site conditions, waste and product variation all matter, so confirm with your supplier before ordering.</p>")
 page("privacy.html","Privacy Policy | Brick & Budget","Privacy policy.","<h1>Privacy policy</h1><p>This site does not ask for or store personal information. Calculators run entirely in your browser; nothing you enter is sent to us.</p><p>Our host may keep standard server logs (such as IP address and pages requested) for security. If we add analytics, advertising or affiliate tracking, they may set cookies, and this policy and a cookie notice will be updated first.</p><p>Affiliate partners such as retailers may set cookies when you click through to their sites, under their own privacy policies.</p><p>Contact: <a href='mailto:brickandbudget.uk@gmail.com'>brickandbudget.uk@gmail.com</a></p><p>Last updated: November 2026.</p>")
 page("disclosure.html","Affiliate Disclosure | Brick & Budget","Affiliate disclosure.","<h1>Affiliate disclosure</h1><p>Some links on Brick &amp; Budget are affiliate links. If you click one and buy something, we may earn a commission from the retailer at no extra cost to you. This helps keep the calculators free.</p><p>We only recommend products that are suitable for the job, and commissions do not affect calculator results. Pages containing affiliate links are clearly labelled.</p><p>As an Amazon Associate we earn from qualifying purchases (this statement applies once we join the Amazon Associates programme).</p>")
 open("assets/style.css","w").write(CSS)
 open("robots.txt","w").write(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
-open("sitemap.xml","w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(f"  <url><loc>{BASE}/{u}</loc><lastmod>2026-11-04</lastmod></url>\n" for u in urls)+"</urlset>\n")
+open("sitemap.xml","w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(f"  <url><loc>{BASE}/{u}</loc><lastmod>2026-11-05</lastmod></url>\n" for u in urls)+"</urlset>\n")
 open("404.html","w").write('<!doctype html><title>Not found</title><p>Page not found. <a href="'+P+'/">Back to Brick &amp; Budget</a></p>')
