@@ -1,0 +1,39 @@
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CIS Deduction Calculator UK | Brick &amp; Budget</title><meta name="description" content="Free UK CIS calculator: work out 20% or 30% deductions on labour only, after materials, VAT and plant hire, for contractors and subcontractors."><link rel="canonical" href="https://curtisrobertrc-droid.github.io/brickandbudget/cis-deduction-calculator/">
+<link rel="stylesheet" href="/brickandbudget/assets/style.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "CIS Deduction Calculator UK", "applicationCategory": "FinanceApplication", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "GBP"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is CIS deducted from materials?", "acceptedAnswer": {"@type": "Answer", "text": "No. Genuine materials the subcontractor paid for directly, VAT, plant hire and consumable stores are taken off before the percentage is applied."}}, {"@type": "Question", "name": "Why am I on 30%?", "acceptedAnswer": {"@type": "Answer", "text": "The higher rate applies if you are not registered for CIS, or if HMRC cannot match your details when the contractor verifies you."}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://curtisrobertrc-droid.github.io/brickandbudget/"}, {"@type": "ListItem", "position": 2, "name": "CIS Deduction Calculator UK"}]}</script></head><body><header><div class="w"><a class="logo" href="/brickandbudget/">Brick &amp; Budget</a><nav><a href="/brickandbudget/#calculators">Calculators</a><a href="https://payhip.com/TradeSheetUK">Templates</a><a href="/brickandbudget/about.html">About</a></nav></div></header>
+<main><div class="w"><p class="note"><a href="/brickandbudget/">Home</a> / Sole trader tax</p><h1>CIS Deduction Calculator UK</h1><p class="lead">Work out how much a contractor should deduct under the Construction Industry Scheme, and what the subcontractor takes home. Rates: 20% registered, 30% unregistered or unmatched, 0% with gross payment status.</p>
+<div class="card"><div class="inputs">
+<label>Gross invoice total (&pound;)<input id="g" type="number" value="5000"></label>
+<label>Materials paid for by subcontractor (&pound;)<input id="m" type="number" value="1200"></label>
+<label>VAT on the invoice (&pound;, if charged)<input id="v" type="number" value="0"></label>
+<label>Plant hire / consumables excluded (&pound;)<input id="p" type="number" value="0"></label>
+<label>CIS rate<select id="r" style="display:block;width:100%;margin-top:6px;padding:11px;font-size:17px"><option value="0.2" selected>20% &mdash; registered subcontractor</option><option value="0.3">30% &mdash; unregistered or unmatched</option><option value="0">0% &mdash; gross payment status</option></select></label>
+</div><div class="out" id="o"></div></div>
+<h2>How the deduction is worked out</h2>
+<ol>
+<li>Start with the gross amount on the subcontractor's invoice.</li>
+<li>Take away VAT, materials the subcontractor paid for directly, plant hire, consumable stores, and manufacturing or prefabricating materials.</li>
+<li>Apply the CIS rate HMRC gave you when you verified the subcontractor to what is left (the labour element).</li>
+<li>Pay the subcontractor the net amount. Pay the deduction to HMRC. It counts as an advance towards the subcontractor's tax and Class 4 National Insurance.</li>
+</ol>
+<h2>Worked example</h2>
+<div class="card"><p>&pound;5,000 gross invoice, &pound;1,200 materials, no VAT, registered at 20%. Deductible amount = &pound;5,000 &minus; &pound;1,200 = &pound;3,800. CIS deduction = &pound;760. Net paid to the subcontractor = &pound;4,240.</p></div>
+<h2>Who this is for</h2>
+<ul>
+<li><strong>Contractors:</strong> check a payment before you approve it, and give a payment and deduction statement within 14 days of the end of each tax month.</li>
+<li><strong>Subcontractors:</strong> check what should have been taken off, and keep every statement so the deductions are credited on your Self Assessment return.</li>
+</ul>
+<div class="card"><strong>Keep your records straight</strong><p class="note">The TradeSheet Co <a href="https://payhip.com/b/hUVbL">CIS Tracker</a> logs CIS deductions so you can offset them against your bill, and the <a href="https://payhip.com/b/cxBUj">Expenses &amp; Mileage Log</a> records costs and business miles through the year.</p></div>
+<h2>Frequently asked questions</h2>
+<details><summary>Is CIS deducted from materials?</summary><p>No. Genuine materials the subcontractor paid for directly, VAT, plant hire and consumable stores are taken off before the percentage is applied. The contractor can ask for receipts; if there are none, they estimate the materials cost.</p></details>
+<details><summary>Why am I on 30%?</summary><p>The higher rate applies if you are not registered for CIS, or if HMRC cannot match your details when the contractor verifies you. Register and make sure the name and UTR match HMRC's records.</p></details>
+<details><summary>Does CIS replace my tax bill?</summary><p>No. CIS deductions are payments on account of your Income Tax and Class 4 NI. On your Self Assessment return they are credited against the bill; if too much was taken you can get a refund.</p></details>
+<details><summary>When must the contractor give me a statement?</summary><p>Within 14 days of the end of the tax month. For a tax month ending 5 June, the statement is due by 19 June.</p></details>
+<h2>Sources</h2><ul><li><a href="https://www.gov.uk/what-you-must-do-as-a-cis-contractor/make-deductions-and-pay-subcontractors">gov.uk/what-you-must-do-as-a-cis-contractor/make-deductions-and-pay-subcontractors</a></li><li><a href="https://www.gov.uk/what-you-must-do-as-a-cis-subcontractor/get-paid">gov.uk/what-you-must-do-as-a-cis-subcontractor/get-paid</a></li></ul><p class="note">Checked against GOV.UK on 6 November 2026. Estimates only, not tax advice. Scottish Income Tax rates differ.</p>
+<script>
+const $=i=>+document.getElementById(i).value||0,f=n=>"£"+n.toLocaleString("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2});
+function calc(){const g=$("g"),ex=$("m")+$("v")+$("p"),lab=Math.max(0,g-ex),rate=+document.getElementById("r").value,ded=lab*rate,net=g-ded;
+document.getElementById("o").innerHTML=[["Amount excluded (materials, VAT, plant)",ex],["Amount CIS applies to (labour)",lab],["CIS deduction",ded],["Net paid to subcontractor",net]].map(x=>`<div><span>${x[0]}</span><strong>${f(x[1])}</strong></div>`).join("")+`<div><span>Effective deduction on gross invoice</span><strong>${g?(ded/g*100).toFixed(1):0}%</strong></div>`}
+document.querySelectorAll("input,select").forEach(i=>i.oninput=calc);calc();
+</script></div></main><footer><div class="w"><p><a href="/brickandbudget/about.html">About</a><a href="/brickandbudget/privacy.html">Privacy</a><a href="/brickandbudget/disclosure.html">Affiliate disclosure</a><a href="mailto:brickandbudget.uk@gmail.com">Contact</a></p>
+<p>Brick &amp; Budget gives estimates only. Always check quantities with your supplier and allow for site conditions.</p></div></footer></body></html>

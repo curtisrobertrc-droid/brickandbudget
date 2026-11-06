@@ -126,7 +126,7 @@ for slug,title,desc,steps,ex,faq,src in calcs:
     if slug in PROMO: body=body.replace('<h2>Frequently asked questions</h2>','<h2>Plan the whole job</h2><p class="note">'+PROMO[slug]+'</p><h2>Frequently asked questions</h2>')
     page(p,f"{title} | Brick & Budget",desc,body,schema)
 # Affiliate-ready slot: renders nothing until links exist; then shows the disclosure line with them.
-AFF={"bathroom-cost":[]}  # add (label,url) tuples once a programme approves us
+AFF={"bathroom-cost":[],"boiler-cost":[]}  # add (label,url) tuples once a programme approves us
 def aff_slot(key):
     links=AFF.get(key) or []
     if not links: return ""
@@ -174,15 +174,84 @@ gschema=[{"@context":"https://schema.org","@type":"Article","headline":gt,"dateM
  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in gfaq]},
  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":BASE+"/"},{"@type":"ListItem","position":2,"name":gt}]}]
 page("new-bathroom-cost-uk/index.html",f"New Bathroom Cost UK 2026 | Brick & Budget",gd,gbody,gschema)
+# --- New boiler cost guide (2026) ---
+G2="boiler-cost"
+urls.append("new-boiler-cost-uk/")
+bt="How Much Does a New Boiler Cost in the UK? (2026)"
+bd="Honest 2026 UK price ranges for a new boiler supplied and fitted, by type and job, with a quick estimator and published sources."
+bfaq=[("How much is a like-for-like combi replacement?","Checkatrade puts a like-for-like combi replacement at about \u00a32,500 to \u00a34,000 supplied and fitted in 2026, with a typical gas boiler job averaging around \u00a33,000."),
+("How much is installation alone?","Published guides put boiler installation labour at roughly \u00a31,000 to \u00a32,000, depending on access, flue work and whether the system is being changed."),
+("Do I need a Gas Safe engineer?","Yes. Any gas boiler must be fitted by a Gas Safe registered engineer. Ask for their Gas Safe licence number and check it on the Gas Safe Register."),
+("How long does a simple swap take?","A straightforward like-for-like combi replacement is often done in a day (about 4 to 6 hours). Changing boiler type or moving the boiler usually takes longer."),
+("Is VAT included?","Homeowner price guides are usually quoted including VAT. Always ask whether a quote is VAT-inclusive.")]
+bbody=f'''<p class="note"><a href="/">Home</a> / Cost guides</p><h1>{bt}</h1><p class="lead">A like-for-like combi boiler replacement typically costs \u00a32,500 to \u00a34,000 supplied and fitted in 2026. Changing from a system or conventional boiler to a combi, or moving the boiler, usually costs more.</p>
+<h2>Typical 2026 price ranges (supplied and fitted)</h2><div class="card"><div class="out">
+<div><span>Like-for-like combi replacement</span><strong>\u00a32,500 to \u00a34,000</strong></div>
+<div><span>Average gas boiler job</span><strong>about \u00a33,000</strong></div>
+<div><span>System or conventional boiler, like-for-like</span><strong>about \u00a33,000</strong></div>
+<div><span>System or conventional converted to combi</span><strong>about \u00a34,000</strong></div>
+<div><span>Boiler supply only (combi / system / conventional)</span><strong>about \u00a31,500 average</strong></div>
+<div><span>Installation labour</span><strong>\u00a31,000 to \u00a32,000</strong></div></div></div>
+<p class="note">Figures are national averages from Checkatrade (updated October 2026). London and the South East tend to be higher; the North East lower. Biomass systems are a different price band entirely (often \u00a310,000+ for the unit alone).</p>
+<h2>Common extras</h2><div class="card"><div class="out">
+<div><span>Wi-fi heating controller</span><strong>about \u00a3150</strong></div>
+<div><span>Magnetic filter, supply</span><strong>\u00a360 to \u00a3160</strong></div>
+<div><span>Magnetic filter, fitting</span><strong>\u00a350 to \u00a3150</strong></div>
+<div><span>New flue or longer flue run</span><strong>varies \u2014 ask for a line item</strong></div>
+<div><span>System powerflush</span><strong>often quoted separately</strong></div></div></div>
+<h2>Quick boiler cost estimator</h2><div class="card" id="best">
+<div class="inputs">
+<label>Job type<select id="bj" style="display:block;width:100%;margin-top:6px;padding:11px;font-size:17px">
+<option value="3250" selected>Like-for-like combi</option>
+<option value="3000">Like-for-like system or conventional</option>
+<option value="4000">Convert system/conventional to combi</option>
+<option value="5000">Back boiler to combi</option>
+<option value="6000">New system where there was no boiler</option>
+</select></label>
+<label>Home size / output<select id="bs" style="display:block;width:100%;margin-top:6px;padding:11px;font-size:17px">
+<option value="0.9">Small flat or 1-2 bed</option>
+<option value="1" selected>Average 3-bed house</option>
+<option value="1.15">Larger 4+ bed house</option>
+</select></label>
+<label>Extras<select id="bx" style="display:block;width:100%;margin-top:6px;padding:11px;font-size:17px">
+<option value="0" selected>None</option>
+<option value="150">Wi-fi controller</option>
+<option value="250">Magnetic filter fitted</option>
+<option value="400">Controller + filter</option>
+</select></label>
+</div>
+<button onclick="bbBoil()">Estimate cost</button><div class="out" id="bo"></div></div>
+<script>function bbBoil(){{var t=+bj.value*+bs.value+ +bx.value,lo=Math.round(t*0.85/50)*50,hi=Math.round(t*1.2/50)*50,f=function(n){{return "\u00a3"+n.toLocaleString("en-GB")}};bo.innerHTML="<div><span>Likely range</span><strong>"+f(lo)+" to "+f(hi)+"</strong></div><div><span>Add a 10% contingency</span><strong>"+f(Math.round(hi*0.1/50)*50)+"</strong></div>"}}bbBoil()</script>
+<p class="note">The estimator scales published national averages. It is a budgeting guide, not a quote. Always get written quotes from Gas Safe engineers.</p>
+<div class="card sb-cta"><p><strong>Planning a wider heating or renovation job?</strong> <a href="{SB}/app/?utm_source=brickandbudget&utm_medium=referral&utm_campaign=boiler-cost-guide">Plan the whole job and compare prices in SmartBuild</a>. It is free and needs no sign-up.</p><p class="note">Sizing radiators for a new boiler? Use the free <a href="/radiator-calculator/">radiator BTU calculator</a>.</p></div>
+<h2>How to keep the cost down</h2><ul>
+<li>Keep the new boiler in the same place with the same flue route where you can.</li>
+<li>Get at least three Gas Safe quotes that list the boiler model, flue work, filter, controls, disposal of the old boiler and any powerflush.</li>
+<li>Ask about manufacturer warranties (often 5 to 10 years when fitted by an accredited installer).</li>
+<li>Check whether you are eligible for any current energy-efficiency schemes on GOV.UK before you pay full price.</li>
+</ul>
+<h2>Plan the whole budget</h2><p class="note">Track quotes and extras in the TradeSheet Co <a href="https://payhip.com/b/c2UC3">Home Renovation Budget Planner</a>. Doing a bathroom at the same time? See our <a href="/new-bathroom-cost-uk/">new bathroom cost guide</a>.</p>
+{aff_slot(G2)}
+<h2>Frequently asked questions</h2>'''+"".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q,a in bfaq)+'''<h2>Sources</h2><ul>
+<li><a href="https://www.checkatrade.com/blog/cost-guides/new-boiler-cost/">Checkatrade: How much does a new boiler cost (updated October 2026)</a></li>
+<li><a href="https://www.checkatrade.com/blog/cost-guides/boiler-installation-cost-calculator/">Checkatrade: Boiler installation cost calculator</a></li>
+<li><a href="https://www.gassaferegister.co.uk/">Gas Safe Register</a></li>
+<li><a href="https://www.gov.uk/improve-energy-efficiency">GOV.UK: Improve energy efficiency (schemes and guidance)</a></li>
+</ul><p class="note">Figures checked November 2026. Prices are estimates; always get written quotes from Gas Safe engineers.</p>'''
+bschema=[{"@context":"https://schema.org","@type":"Article","headline":bt,"dateModified":"2026-11-06","author":{"@type":"Organization","name":"Brick & Budget"}},
+ {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":q,"acceptedAnswer":{"@type":"Answer","text":a}} for q,a in bfaq]},
+ {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":BASE+"/"},{"@type":"ListItem","position":2,"name":bt}]}]
+page("new-boiler-cost-uk/index.html","New Boiler Cost UK 2026 | Brick & Budget",bd,bbody,bschema)
+
 exec(open("tax.py").read())
 grid="".join(f'<a href="/{s}-calculator/"><strong>{t.split(":")[0]}</strong>{d}</a>' for s,t,d,*_ in calcs)
-page("index.html","Brick & Budget: Free UK Building and DIY Material Calculators","Free UK calculators for plasterboard, plaster, paint, tiles, concrete, bricks, flooring, VAT, skirting, wallpaper, decking, fencing, gravel, loft insulation and radiators.",
- f'<h1>Free UK material calculators for builders and DIYers</h1><p class="lead">Work out what to buy before you go to the merchant. Metric, UK product sizes, and plain-English guides written from real trade experience.</p><h2 id="calculators">Calculators</h2><div class="grid">{grid}</div><h2 id="guides">Cost guides</h2><div class="grid"><a href="/new-bathroom-cost-uk/"><strong>New bathroom cost UK (2026)</strong>Price ranges, breakdown and a quick estimator.</a></div><h2 id="sole-trader">Sole trader tax (2026/27)</h2>'+TL,
+page("index.html","Brick & Budget: Free UK Building and DIY Material Calculators","Free UK calculators and cost guides for plasterboard, paint, tiles, concrete, boilers, bathrooms, VAT, CIS and sole trader tax.",
+ f'<h1>Free UK material calculators for builders and DIYers</h1><p class="lead">Work out what to buy before you go to the merchant. Metric, UK product sizes, and plain-English guides written from real trade experience.</p><h2 id="calculators">Calculators</h2><div class="grid">{grid}</div><h2 id="guides">Cost guides</h2><div class="grid"><a href="/new-bathroom-cost-uk/"><strong>New bathroom cost UK (2026)</strong>Price ranges, breakdown and a quick estimator.</a><a href="/new-boiler-cost-uk/"><strong>New boiler cost UK (2026)</strong>Combi, system and conversion price ranges.</a></div><h2 id="sole-trader">Sole trader tax (2026/27)</h2>'+TL,
  [{"@context":"https://schema.org","@type":"WebSite","name":"Brick & Budget","url":BASE+"/"}])
 page("about.html","About Brick & Budget","About Brick & Budget.","<h1>About Brick &amp; Budget</h1><p>Brick &amp; Budget is a set of free calculators and guides for UK homeowners and tradespeople, built by people with hands-on experience in the North East building and refurbishment trade.</p><p>Every calculator uses UK product sizes and is checked against manufacturer guidance. Results are estimates: site conditions, waste and product variation all matter, so confirm with your supplier before ordering.</p>")
 page("privacy.html","Privacy Policy | Brick & Budget","Privacy policy.","<h1>Privacy policy</h1><p>This site does not ask for or store personal information. Calculators run entirely in your browser; nothing you enter is sent to us.</p><p>Our host may keep standard server logs (such as IP address and pages requested) for security. If we add analytics, advertising or affiliate tracking, they may set cookies, and this policy and a cookie notice will be updated first.</p><p>Affiliate partners such as retailers may set cookies when you click through to their sites, under their own privacy policies.</p><p>Contact: <a href='mailto:brickandbudget.uk@gmail.com'>brickandbudget.uk@gmail.com</a></p><p>Last updated: November 2026.</p>")
 page("disclosure.html","Affiliate Disclosure | Brick & Budget","Affiliate disclosure.","<h1>Affiliate disclosure</h1><p>Some links on Brick &amp; Budget are affiliate links. If you click one and buy something, we may earn a commission from the retailer at no extra cost to you. This helps keep the calculators free.</p><p>We only recommend products that are suitable for the job, and commissions do not affect calculator results. Pages containing affiliate links are clearly labelled.</p><p>As an Amazon Associate we earn from qualifying purchases (this statement applies once we join the Amazon Associates programme).</p>")
 open("assets/style.css","w").write(CSS)
 open("robots.txt","w").write(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
-open("sitemap.xml","w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(f"  <url><loc>{BASE}/{u}</loc><lastmod>2026-11-05</lastmod></url>\n" for u in urls)+"</urlset>\n")
+open("sitemap.xml","w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(f"  <url><loc>{BASE}/{u}</loc><lastmod>2026-11-06</lastmod></url>\n" for u in urls)+"</urlset>\n")
 open("404.html","w").write('<!doctype html><title>Not found</title><p>Page not found. <a href="'+P+'/">Back to Brick &amp; Budget</a></p>')
