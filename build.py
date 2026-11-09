@@ -19,7 +19,10 @@ footer{background:#1d2733;color:#c4ccd6;font-size:14px;padding:24px 0}footer a{c
 def page(path,title,desc,body,schema=None):
     sc="".join(f'<script type="application/ld+json">{json.dumps(s)}</script>' for s in (schema or []))
     h=f"""<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{html.escape(title)}</title><meta name="description" content="{html.escape(desc)}"><link rel="canonical" href="{BASE}/{path.replace('index.html','')}">
+<title>{html.escape(title)}</title><meta name="description" content="{html.escape(desc)}">
+<meta name="p:domain_verify" content="33a78551f2e02994277261a5109295f7"/>
+<link rel="canonical" href="{BASE}/{path.replace('index.html','')}">
+<meta property="og:title" content="{html.escape(title)}"><meta property="og:description" content="{html.escape(desc)}"><meta property="og:type" content="website"><meta property="og:url" content="{BASE}/{path.replace('index.html','')}">
 <link rel="stylesheet" href="/assets/style.css">{sc}</head><body><header><div class="w"><a class="logo" href="/">Brick &amp; Budget</a><nav><a href="/#calculators">Calculators</a><a href="https://payhip.com/TradeSheetUK">Templates</a><a href="/about.html">About</a></nav></div></header>
 <main><div class="w">{body}</div></main><footer><div class="w"><p><a href="/about.html">About</a><a href="/privacy.html">Privacy</a><a href="/disclosure.html">Affiliate disclosure</a><a href="mailto:brickandbudget.uk@gmail.com">Contact</a></p>
 <p>Brick &amp; Budget gives estimates only. Always check quantities with your supplier and allow for site conditions.</p></div></footer></body></html>"""
@@ -102,6 +105,28 @@ calcs=[
  [("What is Delta T50?","It is the standard test condition for radiator output. Heat pumps and low flow temperatures give less, so you may need a larger radiator."),("BTU or watts?","Both measure heat output; 1 watt is about 3.412 BTU/h."),("Can I use two radiators?","Yes. Split the total between them, which often heats a large room more evenly.")],
  ["Radiator manufacturer output data (Delta T50)"]),
 ]
+
+# Payhip product URLs (TradeSheet Co)
+PH={
+ "starter":("Sole Trader Starter Pack","https://payhip.com/b/7Zo5n","Quotes, CIS tracker, day rate and expenses in one pack."),
+ "reno":("Renovation Planning Pack","https://payhip.com/b/j4x0O","Budget planner, snagging list and kitchen measuring sheets."),
+ "landlord":("Landlord Rental Tracker","https://payhip.com/b/tEZJT","MTD-ready rent and expense records for UK landlords."),
+ "landlord_pack":("Landlord Starter Pack","https://payhip.com/b/urW9O","Tracker plus inspection checklist and arrears log."),
+ "pipeline":("Quote Pipeline Tracker","https://payhip.com/b/sDHlN","Chase quotes, win rate and follow-ups in one spreadsheet."),
+ "sa":("Self Assessment Checklist","https://payhip.com/b/NwBre","Deadlines, monthly planner and pre-filing checklist."),
+ "expenses":("Expenses & Mileage Log","https://payhip.com/b/cxBUj","HMRC categories and 55p/25p mileage for 2026/27."),
+ "cis":("CIS Tracker","https://payhip.com/b/hUVbL","Log CIS deductions ready for Self Assessment."),
+ "budget":("Home Renovation Budget Planner","https://payhip.com/b/c2UC3","Track materials, labour and quotes by room."),
+ "kitchen":("Kitchen Planner Printable","https://payhip.com/b/KTcDH","Measuring sheet, unit schedule and fitting checklist."),
+}
+def related_box(keys, heading="Related template"):
+    items=[PH[k] for k in keys if k in PH]
+    if not items: return ""
+    lis="".join(f'<li><a href="{u}">{html.escape(n)}</a> — {html.escape(b)}</li>' for n,u,b in items)
+    return (f'<div class="card related"><strong>{html.escape(heading)}</strong>'
+            f'<ul class="note" style="margin:8px 0 0;padding-left:18px">{lis}</ul>'
+            f'<p class="note" style="margin-top:10px">More templates in the <a href="https://payhip.com/TradeSheetUK">TradeSheet Co shop</a>.</p></div>')
+
 PROMO={k:'Budgeting a bigger project? The TradeSheet Co <a href="https://payhip.com/b/c2UC3">Home Renovation Budget Planner</a> tracks materials, labour and costs in one spreadsheet. More templates in the <a href="https://payhip.com/TradeSheetUK">TradeSheet Co shop</a>.' for k in ['decking','fence','gravel','insulation','radiator']}
 SB="https://smartbuilduk.co.uk"
 SBG={"paint":"how-much-paint-do-i-need","plasterboard":"how-much-plasterboard-do-i-need","plaster":"how-much-plaster-do-i-need","tiles":"how-many-tiles-do-i-need","skirting":"how-much-skirting-board-do-i-need","flooring":"how-much-laminate-flooring-do-i-need","wallpaper":"how-many-rolls-of-wallpaper-do-i-need","insulation":"how-much-loft-insulation-do-i-need","fence":"how-many-fence-panels-do-i-need","decking":"how-much-decking-do-i-need","concrete":"how-much-concrete-for-a-shed-base","gravel":"how-much-gravel-do-i-need","bricks":"how-many-bricks-do-i-need"}
@@ -116,6 +141,8 @@ for slug,title,desc,steps,ex,faq,src in calcs:
     body=f'<p class="note"><a href="/">Home</a> / Calculators</p><h1>{title}</h1><p class="lead">{desc}</p>{DISC}<div class="card" id="calc"><noscript>This calculator needs JavaScript.</noscript></div>'
     body+="<h2>How to work it out</h2><ol>"+"".join(f"<li>{s}</li>" for s in steps)+"</ol>"
     body+=f'<h2>Worked example</h2><div class="card"><p>{ex}</p></div>'+sb_cta(slug)
+    _rel={'vat':['pipeline','starter'],'tiles':['reno','budget'],'paint':['reno','budget'],'flooring':['reno','budget'],'plasterboard':['reno','budget'],'plaster':['reno','budget'],'skirting':['reno','budget'],'wallpaper':['reno','budget'],'decking':['budget','reno'],'fence':['budget'],'gravel':['budget'],'insulation':['budget','reno'],'radiator':['budget'],'concrete':['budget'],'bricks':['budget']}
+    if slug in _rel: body+=related_box(_rel[slug], 'Related template')
     body+='<h2>What you will need</h2><p class="note">Recommended materials and tools will be listed here. (Affiliate links will be added once programmes are approved.)</p>'
     body+="<h2>Frequently asked questions</h2>"+"".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q,a in faq)
     body+="<h2>Sources</h2><ul>"+"".join(f"<li>{s}</li>" for s in src)+'</ul><p class="note">Results are estimates. Always confirm quantities with your supplier.</p>'
@@ -168,6 +195,7 @@ gbody=f'''<p class="note"><a href="/">Home</a> / Cost guides</p><h1>{gt}</h1><p 
 <div class="card sb-cta"><p><strong>Ready to plan your bathroom?</strong> <a href="{SB}/app/?utm_source=brickandbudget&utm_medium=referral&utm_campaign=bathroom-cost-guide">Plan the whole job and compare prices in SmartBuild</a>. It is free and needs no sign-up.</p><p class="note">Tiling or re-boarding yourself? See the <a href="{SB}/guides/how-many-floor-tiles-for-a-bathroom/?utm_source=brickandbudget&utm_medium=referral&utm_campaign=bathroom-cost-guide">bathroom floor tiles guide</a>.</p></div>
 <h2>How to keep the cost down</h2><ul><li>Keep the toilet, basin and bath or shower in the same positions to avoid moving waste pipes.</li><li>Tile only the wet zones and use moisture-resistant paint elsewhere.</li><li>Get at least three written quotes that list what is included: removal, plastering, electrics, tiling and waste.</li><li>Buy the suite yourself only if the fitter agrees; some will not warranty customer-supplied items.</li></ul>
 <h2>Plan the whole budget</h2><p class="note">Track quotes, materials and labour in the TradeSheet Co <a href="https://payhip.com/b/c2UC3">Home Renovation Budget Planner</a>. Doing the kitchen too? See SmartBuild's <a href="{SB}/guides/cost-to-renovate-a-kitchen-uk/?utm_source=brickandbudget&utm_medium=referral&utm_campaign=bathroom-cost-guide">kitchen renovation cost guide</a> and the <a href="https://payhip.com/b/KTcDH">Kitchen Planner Printable</a>.</p>
+'''+related_box(['reno','budget','kitchen'], 'Related template')+f'''
 {aff_slot(G)}
 <h2>Frequently asked questions</h2>'''+"".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q,a in gfaq)+'''<h2>Sources</h2><ul><li><a href="https://www.checkatrade.com/blog/cost-guides/new-bathroom-cost/">Checkatrade: How much does a new bathroom cost (updated March 2026)</a></li><li><a href="https://www.checkatrade.com/blog/cost-guides/ensuite-bathroom-installation-cost/">Checkatrade: Cost to add an en-suite (updated June 2026)</a></li><li><a href="https://whito.co.uk/kitchen-bathroom-fitters/guides/kitchen-and-bathroom-fitting-prices-what-to-publish/">Whito: comparison of Checkatrade, MyBuilder and MyJobQuote bathroom prices (2026)</a></li><li><a href="https://www.gov.uk/guidance/electrical-safety-approved-document-p">GOV.UK: Approved Document P (electrical safety)</a></li></ul><p class="note">Figures checked November 2026. Prices are estimates; always get written quotes.</p>'''
 gschema=[{"@context":"https://schema.org","@type":"Article","headline":gt,"dateModified":"2026-11-05","author":{"@type":"Organization","name":"Brick & Budget"}},
@@ -231,6 +259,7 @@ bbody=f'''<p class="note"><a href="/">Home</a> / Cost guides</p><h1>{bt}</h1><p 
 <li>Check whether you are eligible for any current energy-efficiency schemes on GOV.UK before you pay full price.</li>
 </ul>
 <h2>Plan the whole budget</h2><p class="note">Track quotes and extras in the TradeSheet Co <a href="https://payhip.com/b/c2UC3">Home Renovation Budget Planner</a>. Doing a bathroom at the same time? See our <a href="/new-bathroom-cost-uk/">new bathroom cost guide</a>.</p>
+'''+related_box(['reno','budget'], 'Related template')+f'''
 {aff_slot(G2)}
 <h2>Frequently asked questions</h2>'''+"".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q,a in bfaq)+'''<h2>Sources</h2><ul>
 <li><a href="https://www.checkatrade.com/blog/cost-guides/new-boiler-cost/">Checkatrade: How much does a new boiler cost (updated October 2026)</a></li>
@@ -246,12 +275,12 @@ page("new-boiler-cost-uk/index.html","New Boiler Cost UK 2026 | Brick & Budget",
 exec(open("tax.py").read())
 grid="".join(f'<a href="/{s}-calculator/"><strong>{t.split(":")[0]}</strong>{d}</a>' for s,t,d,*_ in calcs)
 page("index.html","Brick & Budget: Free UK Building and DIY Material Calculators","Free UK calculators and cost guides for plasterboard, paint, tiles, concrete, boilers, bathrooms, VAT, CIS and sole trader tax.",
- f'<h1>Free UK material calculators for builders and DIYers</h1><p class="lead">Work out what to buy before you go to the merchant. Metric, UK product sizes, and plain-English guides written from real trade experience.</p><h2 id="calculators">Calculators</h2><div class="grid">{grid}</div><h2 id="guides">Cost guides</h2><div class="grid"><a href="/new-bathroom-cost-uk/"><strong>New bathroom cost UK (2026)</strong>Price ranges, breakdown and a quick estimator.</a><a href="/new-boiler-cost-uk/"><strong>New boiler cost UK (2026)</strong>Combi, system and conversion price ranges.</a></div><h2 id="sole-trader">Sole trader tax (2026/27)</h2>'+TL,
+ f'<h1>Free UK material calculators for builders and DIYers</h1><p class="lead">Work out what to buy before you go to the merchant. Metric, UK product sizes, and plain-English guides written from real trade experience.</p><h2 id="calculators">Calculators</h2><div class="grid">{grid}</div><h2 id="guides">Cost guides</h2><div class="grid"><a href="/new-bathroom-cost-uk/"><strong>New bathroom cost UK (2026)</strong>Price ranges, breakdown and a quick estimator.</a><a href="/new-boiler-cost-uk/"><strong>New boiler cost UK (2026)</strong>Combi, system and conversion price ranges.</a></div><h2 id="sole-trader">Sole trader tax (2026/27)</h2>'+TL+'''<h2 id="templates">Templates</h2><div class="grid"><a href="https://payhip.com/b/7Zo5n"><strong>Sole Trader Starter Pack</strong>Quotes, CIS, day rate and expenses in one download.</a><a href="https://payhip.com/b/j4x0O"><strong>Renovation Planning Pack</strong>Budget, snagging list and kitchen measuring sheets.</a><a href="https://payhip.com/b/NwBre"><strong>Self Assessment Checklist</strong>Deadlines and a tax-year planner for 2026/27.</a><a href="https://payhip.com/b/sDHlN"><strong>Quote Pipeline Tracker</strong>Chase quotes and see your win rate.</a><a href="https://payhip.com/b/tEZJT"><strong>Landlord Rental Tracker</strong>MTD-ready rent and expense records.</a><a href="https://payhip.com/b/cxBUj"><strong>Expenses &amp; Mileage Log</strong>HMRC categories and 55p mileage.</a><a href="https://payhip.com/TradeSheetUK"><strong>All TradeSheet Co templates</strong>Spreadsheets and printables for UK trades and landlords.</a></div>''',
  [{"@context":"https://schema.org","@type":"WebSite","name":"Brick & Budget","url":BASE+"/"}])
 page("about.html","About Brick & Budget","About Brick & Budget.","<h1>About Brick &amp; Budget</h1><p>Brick &amp; Budget is a set of free calculators and guides for UK homeowners and tradespeople, built by people with hands-on experience in the North East building and refurbishment trade.</p><p>Every calculator uses UK product sizes and is checked against manufacturer guidance. Results are estimates: site conditions, waste and product variation all matter, so confirm with your supplier before ordering.</p>")
 page("privacy.html","Privacy Policy | Brick & Budget","Privacy policy.","<h1>Privacy policy</h1><p>This site does not ask for or store personal information. Calculators run entirely in your browser; nothing you enter is sent to us.</p><p>Our host may keep standard server logs (such as IP address and pages requested) for security. If we add analytics, advertising or affiliate tracking, they may set cookies, and this policy and a cookie notice will be updated first.</p><p>Affiliate partners such as retailers may set cookies when you click through to their sites, under their own privacy policies.</p><p>Contact: <a href='mailto:brickandbudget.uk@gmail.com'>brickandbudget.uk@gmail.com</a></p><p>Last updated: November 2026.</p>")
 page("disclosure.html","Affiliate Disclosure | Brick & Budget","Affiliate disclosure.","<h1>Affiliate disclosure</h1><p>Some links on Brick &amp; Budget are affiliate links. If you click one and buy something, we may earn a commission from the retailer at no extra cost to you. This helps keep the calculators free.</p><p>We only recommend products that are suitable for the job, and commissions do not affect calculator results. Pages containing affiliate links are clearly labelled.</p><p>As an Amazon Associate we earn from qualifying purchases (this statement applies once we join the Amazon Associates programme).</p>")
 open("assets/style.css","w").write(CSS)
 open("robots.txt","w").write(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
-open("sitemap.xml","w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(f"  <url><loc>{BASE}/{u}</loc><lastmod>2026-11-06</lastmod></url>\n" for u in urls)+"</urlset>\n")
+open("sitemap.xml","w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+"".join(f"  <url><loc>{BASE}/{u}</loc><lastmod>2026-11-09</lastmod></url>\n" for u in urls)+"</urlset>\n")
 open("404.html","w").write('<!doctype html><title>Not found</title><p>Page not found. <a href="'+P+'/">Back to Brick &amp; Budget</a></p>')

@@ -1,6 +1,6 @@
 # Sole trader tax section (2026/27). Exec'd from build.py; uses page(), urls, BASE.
 GOV={"it":"https://www.gov.uk/income-tax-rates","ni":"https://www.gov.uk/self-employed-national-insurance-rates","mi":"https://www.gov.uk/simpler-income-tax-simplified-expenses/vehicles","poa":"https://www.gov.uk/understand-self-assessment-bill/payments-on-account","exp":"https://www.gov.uk/expenses-if-youre-self-employed","cis":"https://www.gov.uk/what-you-must-do-as-a-cis-contractor/make-deductions-and-pay-subcontractors","cis_sub":"https://www.gov.uk/what-you-must-do-as-a-cis-subcontractor/get-paid","sa":"https://www.gov.uk/self-assessment-tax-returns/deadlines","pen":"https://www.gov.uk/self-assessment-tax-returns/penalties"}
-TS='<div class="card"><strong>Keep your records straight</strong><p class="note">The TradeSheet Co <a href="https://payhip.com/b/hUVbL">CIS Tracker</a> logs CIS deductions so you can offset them against your bill, and the <a href="https://payhip.com/b/cxBUj">Expenses &amp; Mileage Log</a> records costs and business miles through the year.</p></div>'
+TS=related_box(['cis','expenses','sa'], 'Related template')
 TL='<div class="grid"><a href="/sole-trader-tax-calculator/"><strong>Take-home pay calculator</strong>Income Tax and Class 4 NI for 2026/27.</a><a href="/cis-deduction-calculator/"><strong>CIS deduction calculator</strong>20%, 30% or gross on labour only.</a><a href="/self-assessment-deadlines/"><strong>Self Assessment deadlines</strong>2025/26 return dates and penalties.</a><a href="/payments-on-account/"><strong>Payments on account</strong>Why the first January bill is often bigger.</a><a href="/sole-trader-expenses/"><strong>Sole trader expenses</strong>What you can and cannot claim.</a></div>'
 def src(*k): return "<h2>Sources</h2><ul>"+"".join(f'<li><a href="{GOV[x]}">{GOV[x].replace("https://www.","")}</a></li>' for x in k)+'</ul><p class="note">Checked against GOV.UK on 6 November 2026. Estimates only, not tax advice. Scottish Income Tax rates differ.</p>'
 def crumbs(t): return {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":BASE+"/"},{"@type":"ListItem","position":2,"name":t}]}
@@ -9,7 +9,7 @@ calc_body='''<h1>Sole Trader Take-Home Pay Calculator UK 2026/27</h1><p class="l
 <h2>Rates used (2026/27)</h2><ul><li>Personal Allowance £12,570, reduced by £1 for every £2 of adjusted net income over £100,000, reaching zero at £125,140.</li><li>Basic rate 20% on taxable income from £12,571 to £50,270; higher rate 40% from £50,271 to £125,140; additional rate 45% above £125,140.</li><li>Class 4 National Insurance: 6% on profits from £12,570 to £50,270, and 2% above £50,270.</li><li>Class 2 National Insurance: not payable. With profits of £7,105 or more, it is treated as paid to protect your record. Below £7,105 you can choose to pay voluntarily at £3.65 a week.</li><li>Simplified mileage for cars and vans: 55p a mile for the first 10,000 business miles in 2026/27 (up from 45p before 6 April 2026), then 25p a mile.</li></ul>
 <h2>How it works</h2><p>Profit is turnover minus allowable expenses minus the mileage allowance. Income Tax on the profit is the tax on your total income minus the tax on your other income alone, so PAYE wages use up your allowance and bands first. Class 4 is worked out on business profit only. You cannot use flat-rate mileage for a vehicle you have claimed capital allowances on.</p>
 <h2>Worked examples (no other income, no mileage)</h2><ul><li>£20,000 profit: Income Tax £1,486, Class 4 £445.80, take-home £18,068.20.</li><li>£60,000 profit: Income Tax £11,432, Class 4 £2,456.60, take-home £46,111.40.</li><li>£120,000 profit: Personal Allowance tapered to £2,570, Income Tax £39,432, Class 4 £3,656.60, take-home £76,911.40.</li></ul>
-'''+TS+'''<h2>Related guides</h2>'''+TL+src("it","ni","mi")+'''
+'''+related_box(['starter','expenses','sa','cis'], 'Related template')+'''<h2>Related guides</h2>'''+TL+src("it","ni","mi")+'''
 <script>
 const $=i=>+document.getElementById(i).value||0,f=n=>"£"+n.toLocaleString("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2});
 function tax(inc){const pa=Math.max(0,12570-Math.max(0,inc-100000)/2),ti=Math.max(0,inc-pa);return Math.min(ti,37700)*.2+Math.min(Math.max(ti-37700,0),125140-37700)*.4+Math.max(ti-125140,0)*.45}
@@ -18,14 +18,14 @@ document.getElementById("r").innerHTML=[["Mileage allowance",ma],["Taxable profi
 document.querySelectorAll("input").forEach(i=>i.oninput=calc);calc();
 </script>'''
 t1="Sole Trader Take-Home Pay Calculator UK 2026/27"
-page("sole-trader-tax-calculator/index.html",t1+" | Brick & Budget","Free UK sole trader calculator for 2026/27: Income Tax, Class 4 National Insurance, 55p mileage and how much to set aside each month.",calc_body,[{"@context":"https://schema.org","@type":"WebApplication","name":t1,"applicationCategory":"FinanceApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"}},crumbs(t1)])
+page("sole-trader-tax-calculator/index.html",t1+" | Brick & Budget","Free UK sole trader calculator for 2026/27: Income Tax, Class 4 National Insurance, 55p mileage and how much to set aside each month.",calc_body,[{"@context":"https://schema.org","@type":"WebApplication","name":t1,"url":BASE+"/sole-trader-tax-calculator/","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"}},crumbs(t1)])
 poa='''<h1>Payments on Account Explained for Sole Traders</h1><p class="lead">Why your first Self Assessment bill in January is often 150% of what you expected, and what you can do about it.</p>
 <h2>What they are</h2><p>Payments on account are advance payments towards your next tax bill, including Class 4 National Insurance. There are two, due by midnight on 31 January and 31 July, and each is normally half of the tax you owed for the previous year.</p>
 <h2>When you do not have to make them</h2><ul><li>Your tax owed for the previous year was less than £1,000, or</li><li>More than 80% of the tax you owed was paid outside Self Assessment, for example through your PAYE tax code.</li></ul>
 <h2>Your first year</h2><p>If you did not make payments on account last year, the January payment covers the full bill for the year just ended plus the first payment on account for the current year. Using HMRC's own example, a £3,000 bill means £4,500 due on 31 January (£3,000 plus £1,500), then £1,500 on 31 July.</p>
 <h2>The balancing payment</h2><p>If your payments on account did not cover the full bill, you pay the difference, the balancing payment, by 31 January after the tax year ends, along with the next first payment on account. If you overpaid, you may be due a refund.</p>
 <h2>Reducing them</h2><p>If you expect lower profits, you can ask HMRC to reduce your payments on account through your online account or with form SA303. If you reduce them too far, HMRC charges interest on the shortfall.</p>
-<h2>Plan ahead</h2><p>Use the <a href="/sole-trader-tax-calculator/">take-home pay calculator</a> to estimate this year's bill and how much to set aside each month. If you work under CIS, deductions already taken are credited against your bill, so keep every statement.</p>'''+TS+src("poa")
+<h2>Plan ahead</h2><p>Use the <a href="/sole-trader-tax-calculator/">take-home pay calculator</a> to estimate this year's bill and how much to set aside each month. If you work under CIS, deductions already taken are credited against your bill, so keep every statement.</p>'''+related_box(['sa','expenses','starter'], 'Related template')+src("poa")
 t2="Payments on Account Explained (UK Sole Traders)"
 page("payments-on-account/index.html",t2+" | Brick & Budget","How Self Assessment payments on account work: 31 January and 31 July deadlines, the first-year 150% bill, balancing payments and how to reduce them.",poa,[{"@context":"https://schema.org","@type":"Article","headline":t2,"dateModified":"2026-11-05","author":{"@type":"Organization","name":"Brick & Budget"}},crumbs(t2)])
 ex='''<h1>What Can a Sole Trader Claim as Expenses?</h1><p class="lead">A plain-English summary of allowable expenses, based on HMRC guidance, with notes for trades.</p>
@@ -35,7 +35,7 @@ ex='''<h1>What Can a Sole Trader Claim as Expenses?</h1><p class="lead">A plain-
 <h2>Mileage instead of actual costs</h2><p>Instead of fuel, insurance and servicing, you can use simplified expenses: 55p a mile for the first 10,000 business miles in 2026/27 and 25p after. You cannot do this for a vehicle you have already claimed capital allowances on, and once you choose flat rates for a vehicle you must keep using them for it. Parking and other travel can be claimed on top.</p>
 <h2>Mixed business and personal use</h2><p>Only the business share counts. If £70 of a £200 phone bill is business calls, claim £70. If you work from home, use a reasonable split, for example by rooms and time used.</p>
 <h2>The trading allowance</h2><p>You cannot claim expenses or capital allowances if you use the £1,000 tax-free trading allowance instead. If you are unsure whether something is allowable, ask HMRC or an accountant.</p>
-<p>Track every receipt and mile in the <a href="https://payhip.com/b/cxBUj">Expenses &amp; Mileage Log</a>, then see the effect on your bill in the <a href="/sole-trader-tax-calculator/">take-home pay calculator</a>.</p>'''+TS+src("exp","mi")
+<p>Track every receipt and mile in the <a href="https://payhip.com/b/cxBUj">Expenses &amp; Mileage Log</a>, then see the effect on your bill in the <a href="/sole-trader-tax-calculator/">take-home pay calculator</a>.</p>'''+related_box(['expenses','starter','sa'], 'Related template')+src("exp","mi")
 t3="What Can a Sole Trader Claim as Expenses? (UK)"
 page("sole-trader-expenses/index.html",t3+" | Brick & Budget","Allowable expenses for UK sole traders: what you can claim, capital allowances, 55p mileage for 2026/27, mixed use and the trading allowance.",ex,[{"@context":"https://schema.org","@type":"Article","headline":t3,"dateModified":"2026-11-05","author":{"@type":"Organization","name":"Brick & Budget"}},crumbs(t3)])
 
@@ -63,7 +63,7 @@ cis_body = '''<p class="note"><a href="/">Home</a> / Sole trader tax</p><h1>CIS 
 <li><strong>Contractors:</strong> check a payment before you approve it, and give a payment and deduction statement within 14 days of the end of each tax month.</li>
 <li><strong>Subcontractors:</strong> check what should have been taken off, and keep every statement so the deductions are credited on your Self Assessment return.</li>
 </ul>
-''' + TS + '''
+''' + related_box(['cis','starter','pipeline','sa'], 'Related template') + '''
 <h2>Frequently asked questions</h2>
 <details><summary>Is CIS deducted from materials?</summary><p>No. Genuine materials the subcontractor paid for directly, VAT, plant hire and consumable stores are taken off before the percentage is applied. The contractor can ask for receipts; if there are none, they estimate the materials cost.</p></details>
 <details><summary>Why am I on 30%?</summary><p>The higher rate applies if you are not registered for CIS, or if HMRC cannot match your details when the contractor verifies you. Register and make sure the name and UTR match HMRC\'s records.</p></details>
@@ -122,7 +122,7 @@ sa_body = '''<p class="note"><a href="/">Home</a> / Sole trader tax</p><h1>Self 
 <li>Read <a href="/payments-on-account/">payments on account</a> so the first January bill does not surprise you.</li>
 <li>Gather expenses and mileage; see <a href="/sole-trader-expenses/">what you can claim</a>.</li>
 </ol>
-''' + TS + '''
+''' + related_box(['sa','starter','expenses','cis'], 'Related template') + '''
 <h2>Frequently asked questions</h2>
 <details><summary>Do I still get the &pound;100 penalty if I owe no tax?</summary><p>Yes. The initial late filing penalty applies even when there is no tax to pay.</p></details>
 <details><summary>Can I pay through my tax code?</summary><p>Often yes if you owe less than &pound;3,000 and file online by 30 December, and you have enough PAYE income. Otherwise pay HMRC directly by 31 January.</p></details>
